@@ -106,6 +106,25 @@ namespace XRAccess.Chirp
             StartCoroutine(RemoveAfterDuration(newID, extendedDuration));
         }
 
+        public void AddConditionalCaption(ConditionalCaption caption) {
+            if (_currentRendererObj == null) { return; }
+
+            uint newID = GenerateCaptionID();
+            _currentCaptions.Add((newID, caption));
+            currentRenderer.AddCaption(newID, caption);
+
+            StartCoroutine(RemoveAfterCondition(newID, caption));
+        }
+
+        private IEnumerator RemoveAfterCondition(uint captionID, ConditionalCaption caption) {
+            while (!caption.condition()) {
+                yield return null;
+            }
+
+            if (currentRenderer != null) { currentRenderer.RemoveCaption(captionID); }
+            _currentCaptions.RemoveAll(caption => caption.Item1 == captionID);
+        }
+
         private IEnumerator RemoveAfterDuration(uint captionID, float duration)
         {
             yield return new WaitForSeconds(duration);

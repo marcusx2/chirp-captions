@@ -2,6 +2,7 @@
  * Defines the structure of a caption
  */
 
+using System;
 using UnityEngine;
 
 namespace XRAccess.Chirp
@@ -23,6 +24,11 @@ namespace XRAccess.Chirp
     {
         public string captionText;
         public float duration;
+    }
+
+    public class ConditionalCaption : Caption {
+        public string captionText;
+        public Func<bool> condition;
     }
 
     /// <summary>

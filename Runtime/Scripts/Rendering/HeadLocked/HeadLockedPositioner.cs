@@ -6,14 +6,12 @@ namespace XRAccess.Chirp
 {
     public class HeadLockedPositioner : MonoBehaviour
     {
-        private Camera _mainCamera;
         private HeadLockedRenderer _renderer;
         private HeadLockedOptions _rendererOptions;
         private SafeArea _safeArea;
 
         public void Init()
         {
-            _mainCamera = CaptionSystem.Instance.mainCamera;
             _renderer = (HeadLockedRenderer)CaptionRenderManager.Instance.currentRenderer;
             _rendererOptions = (HeadLockedOptions)_renderer.options;
             _safeArea = transform.parent.GetComponent<SafeArea>();

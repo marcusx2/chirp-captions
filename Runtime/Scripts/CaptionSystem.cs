@@ -16,9 +16,12 @@ namespace XRAccess.Chirp
 
         public CaptionOptions options;
 
-        private void Awake()
+        void Awake()
         {
             Instance = this;
+            if (mainAudioListener == null) mainAudioListener = FindAnyObjectByType<AudioListener>();
+            if (mainCamera == null) mainCamera = Camera.main;
+
         }
     }
 }

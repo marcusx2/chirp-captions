@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+
 #if USING_URP
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -34,7 +35,7 @@ namespace XRAccess.Chirp
             _captionObjectMap = new List<(uint, GameObject)>();
         }
 
-        private void Start()
+        void Start()
         {
             _mainCamera = CaptionSystem.Instance.mainCamera;
 
@@ -50,6 +51,7 @@ namespace XRAccess.Chirp
 
         private void Update()
         {
+            if (_mainCamera == null) return;
             Vector3 targetPosition = _mainCamera.transform.position;
             Quaternion targetRotation = _mainCamera.transform.rotation;
 
@@ -142,7 +144,10 @@ namespace XRAccess.Chirp
                 var c = (TimedCaption)caption;
                 TMPText.SetText(c.captionText);
             }
-            else if (caption is RealtimeCaption)
+            else if (caption is ConditionalCaption) {
+                var c = (ConditionalCaption)caption;
+                TMPText.SetText(c.captionText);
+            } else if (caption is RealtimeCaption)
             {
                 // TODO implement later
             }
@@ -152,11 +157,12 @@ namespace XRAccess.Chirp
                 SetSourceLabel(captionObject, caption);
             }
 
-            if (_options.showIndicatorArrows == true && caption.audioSource.spatialBlend > 0f)
-            {
-                var arrowsController = captionObject.GetComponentInChildren<IndicatorArrowsController>();
-                arrowsController.enabled = true;
-                arrowsController.audioSource = caption.audioSource;
+            if (caption.audioSource != null) {
+                if (_options.showIndicatorArrows == true && caption.audioSource.spatialBlend > 0f) {
+                    var arrowsController = captionObject.GetComponentInChildren<IndicatorArrowsController>();
+                    arrowsController.enabled = true;
+                    arrowsController.audioSource = caption.audioSource;
+                }
             }
         }
 
@@ -179,7 +185,11 @@ namespace XRAccess.Chirp
         private void SetSourceLabel(GameObject captionObject, Caption caption)
         {
             TMP_Text TMPText = captionObject.GetComponentInChildren<TMP_Text>();
-            string sourceLabel = caption.audioSource.GetComponent<CaptionSource>()?.sourceLabel;
+            string sourceLabel = null;
+
+            if (caption.audioSource != null) {
+                sourceLabel = caption.audioSource.GetComponent<CaptionSource>()?.sourceLabel;
+            }
 
             if (!string.IsNullOrEmpty(sourceLabel))
             {
@@ -190,7 +200,7 @@ namespace XRAccess.Chirp
         private void SetOptions()
         {
             _captionsContainer.transform.localRotation = Quaternion.Euler(_options.xAxisTilt, 0f, 0f);
-            _captionsContainer.transform.localPosition = new Vector3(0f, 0f, _options.defaultCaptionDistance);
+            _captionsContainer.transform.localPosition = new Vector3(0f, _options.defaultCaptionHeight, _options.defaultCaptionDistance);
         }
 
         private void InitCaptionCamera()

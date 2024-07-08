@@ -54,6 +54,7 @@ namespace XRAccess.Chirp
         [Header("Headlocked View")]
         public float lag = 0.3f;
         public float xAxisTilt = 0f;
+        public float defaultCaptionHeight = -0.2f;
         public float defaultCaptionDistance = 1.6f;
         public float canvasScale = 0.003f;
         public bool lockZRotation = true;

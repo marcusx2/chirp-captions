@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
 
 namespace XRAccess.Chirp
 {
@@ -31,7 +32,7 @@ namespace XRAccess.Chirp
             _TMPText = transform.parent.GetComponentInChildren<TMP_Text>();
         }
 
-        private void Start()
+        void Start()
         {
             _safeAreaAngles = CaptionRenderManager.Instance.currentRenderer.GetComponent<SafeArea>().GetAngles();
             _mainCamera = CaptionSystem.Instance.mainCamera;
@@ -39,7 +40,7 @@ namespace XRAccess.Chirp
 
         private void Update()
         {
-            if (audioSource != null)
+            if (audioSource != null && _mainCamera != null)
             {
                 Vector3 target = audioSource.transform.position;
                 Vector3 relativeTarget = _mainCamera.transform.InverseTransformPoint(target);

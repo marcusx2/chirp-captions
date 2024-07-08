@@ -2,6 +2,8 @@
  * CaptionSource is attached to a GameObject for playing captions from it.
  */
 
+using Amazon.Auth.AccessControlPolicy;
+using System;
 using UnityEngine;
 
 namespace XRAccess.Chirp
@@ -12,7 +14,6 @@ namespace XRAccess.Chirp
         public GameObject boundingObject;
         public string sourceLabel;
 
-        private void InitCaptionSource() { }
 
         /// <summary>
         /// Method to play a caption from the caption source.
@@ -29,6 +30,18 @@ namespace XRAccess.Chirp
             caption.boundingObject = boundingObject;
 
             CaptionRenderManager.Instance.AddTimedCaption(caption);
+        }
+
+        public void ShowConditionalCaption(string captionText, Func<bool> condition) {
+            ConditionalCaption caption = new ConditionalCaption();
+            caption.startTime = Time.time;
+            caption.captionText = captionText;
+            caption.audioSource = audioSource;
+            caption.boundingObject = boundingObject;
+
+            caption.condition = condition;
+
+            CaptionRenderManager.Instance.AddConditionalCaption(caption);
         }
 
         private void Reset()
